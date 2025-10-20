@@ -122,6 +122,7 @@ uninit_tests = [
     'test_aserver_multiple_interfaces',
     'test_property_names',
     'test_method_names',
+    'test_signal_names',
 ]
 
 foreach t : uninit_tests
