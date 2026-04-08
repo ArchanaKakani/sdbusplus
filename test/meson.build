@@ -20,6 +20,7 @@ if not gtest_dep.found() or not gmock_dep.found()
 endif
 
 tests = [
+    'async/barrier',
     'async/context',
     'async/task',
     'async/timer',

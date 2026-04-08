@@ -30,6 +30,7 @@ endif
 root_inc = include_directories('include')
 
 libsdbusplus_src = files(
+    'src/async/barrier.cpp',
     'src/async/context.cpp',
     'src/async/fdio.cpp',
     'src/async/match.cpp',
