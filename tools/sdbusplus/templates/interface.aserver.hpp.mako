@@ -51,6 +51,26 @@ class ${interface.classname} :
         _${interface.joinedName("_", "interface")}(
             _context(), path, interface, _vtable, this)
     {}
+    explicit ${interface.classname}(const sdbusplus::object_path& path) :
+        _${interface.joinedName("_", "interface")}(
+            _context(), path, interface, _vtable, this)
+    {}
+
+    ${interface.classname}(
+            const char* path,
+            [[maybe_unused]] ${interface.classname}::properties_t props)
+        : ${interface.classname}(path)
+    {
+        % for p in interface.properties:
+        ${p.snake_case}_ = props.${p.snake_case};
+        % endfor
+    }
+
+    ${interface.classname}(
+        const sdbusplus::object_path& path,
+        [[maybe_unused]] ${interface.classname}::properties_t props) :
+        ${interface.classname}(path.str.c_str(), props)
+    {}
 
 % for s in interface.signals:
 ${s.render(loader, "signal.aserver.emit.hpp.mako", signal=s, interface=interface)}
@@ -67,16 +87,6 @@ ${s.render(loader, "signal.aserver.emit.hpp.mako", signal=s, interface=interface
     {
         _${interface.joinedName("_", "interface")}.emit_removed();
     }
-
-    /* Property access tags. */
-% for p in interface.properties:
-${p.render(loader, "property.aserver.tag.hpp.mako", property=p, interface=interface)}\
-% endfor
-
-    /* Method tags. */
-% for m in interface.methods:
-${m.render(loader, "method.aserver.tag.hpp.mako", method=m, interface=interface)}\
-% endfor
 
 % for p in interface.properties:
 ${p.render(loader, "property.aserver.get.hpp.mako", property=p, interface=interface)}

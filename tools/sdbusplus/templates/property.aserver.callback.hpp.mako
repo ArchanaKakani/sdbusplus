@@ -16,7 +16,7 @@ i_name = interface.classname
             auto m = sdbusplus::message_t{reply};
 
             // Set up the transaction.
-            server::transaction::set_id(m);
+            sdbusplus::server::transaction::set_id(m);
 
             // Get property value and add to message.
             if constexpr (server_details::has_get_property_msg<${p_tag},
@@ -64,9 +64,17 @@ i_name = interface.classname
             auto m = sdbusplus::message_t{value};
 
             // Set up the transaction.
-            server::transaction::set_id(m);
+            sdbusplus::server::transaction::set_id(m);
 
-            auto new_value = m.unpack<${p_type}>();
+            ${p_type} new_value;
+            try
+            {
+                new_value = m.unpack<${p_type}>();
+            }
+            catch(const sdbusplus::internal_exception_t& e)
+            {
+                return e.set_error(error);
+            }
 
             // Get property value and add to message.
             if constexpr (server_details::has_set_property_msg<

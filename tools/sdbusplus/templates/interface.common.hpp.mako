@@ -9,6 +9,10 @@
 #include <sdbusplus/exception.hpp>
 #include <sdbusplus/message.hpp>
 #include <sdbusplus/utility/dedup_variant.hpp>
+
+% for h in interface.cpp_includes():
+#include <${h}>
+% endfor
 <%
     def setOfPropertyTypes():
         return set(p.cppTypeParam(interface.name) for p in
@@ -41,8 +45,34 @@ struct ${interface.classname}
 
     using PropertiesVariant = sdbusplus::utility::dedup_variant_t<
         ${",\n        ".join(sorted(setOfPropertyTypes()))}>;
-    % endif \
+    % else:
+    using properties_t = std::nullopt_t;
+    % endif
 
+    % if interface.methods:
+% for method in interface.methods:
+${method.render(loader, "method.common.tag.hpp.mako", method=method, interface=interface)}\
+% endfor
+
+    struct method_names
+    {
+        % for method in interface.methods:
+        static constexpr auto ${method.snake_case} = ${method.snake_case}_t::name;
+        % endfor
+    };
+
+    % endif
+\
+    % if interface.signals:
+    struct signal_names
+    {
+        % for signal in interface.signals:
+        static constexpr auto ${signal.snake_case} = "${signal.name}";
+        % endfor
+    };
+
+    % endif
+\
     % for p in interface.paths:
         % if p.description:
     /** ${p.description.strip()} */
@@ -68,6 +98,19 @@ struct ${interface.classname}
         % endif
     static constexpr auto ${s.snake_case} = "${s.value}";
     % endfor
+
+    % if interface.properties:
+% for p in interface.properties:
+${p.render(loader, "property.common.tag.hpp.mako", property=p, interface=interface)}\
+% endfor
+
+    struct property_names
+    {
+        % for p in interface.properties:
+        static constexpr auto ${p.snake_case} = ${p.snake_case}_t::name;
+        % endfor
+    };
+    % endif
 
     % for e in interface.enums:
     /** @brief Convert a string to an appropriate enum value.
