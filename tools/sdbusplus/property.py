@@ -88,7 +88,7 @@ class Property(NamedElement, Renderer):
 
     def default_value(self, interface):
         if self.defaultValue is None:
-            return ""
+            return " = {}"
         value = str(self.defaultValue)
         enum_prefix = ""
         if self.is_enum():
@@ -241,7 +241,7 @@ class Property(NamedElement, Renderer):
             "registryName": "string",
         },
         "object_path": {
-            "cppName": "sdbusplus::message::object_path",
+            "cppName": "sdbusplus::object_path",
             "params": 0,
             "registryName": "string",
         },

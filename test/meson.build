@@ -114,3 +114,39 @@ test(
         dependencies: [gmock_dep, gtest_dep, server_test_dep],
     ),
 )
+
+test(
+    'test-aserver-invalid-enum',
+    executable(
+        'test-aserver-invalid-enum',
+        'gen/test_aserver_invalid_enum.cpp',
+        generated_sources,
+        include_directories: [root_inc],
+        dependencies: [sdbusplus_dep, server_test_dep, gtest_dep],
+    ),
+)
+
+uninit_tests = [
+    'test_server_no_uninitialized_value_constructor',
+    'test_aserver_no_uninitialized_value_constructor',
+    'test_aserver_emit_interfaces_added_signal',
+    'test_aserver_multiple_interfaces',
+    'test_property_names',
+    'test_method_names',
+    'test_signal_names',
+    'test_server_construct_with_object_path',
+    'test_aserver_construct_with_object_path',
+]
+
+foreach t : uninit_tests
+    test(
+        t,
+        executable(
+            t,
+            f'gen/@t@.cpp',
+            generated_sources,
+            include_directories: [root_inc],
+            dependencies: [sdbusplus_dep, server_test_dep, gtest_dep],
+        ),
+    )
+endforeach

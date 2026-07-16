@@ -36,8 +36,7 @@ SdBusError::SdBusError(int error_in, const char* prefix,
 {}
 
 SdBusError::SdBusError(int error_in, std::string&& prefix,
-                       SdBusInterface* intf_in) :
-    error(SD_BUS_ERROR_NULL), intf(intf_in)
+                       SdBusInterface* intf_in) : intf(intf_in)
 {
     // We can't check the output of intf->sd_bus_error_set_errno() because
     // it returns the input errorcode. We don't want to try and guess
